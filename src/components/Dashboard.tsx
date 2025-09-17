@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Brain, Target, TrendingUp, Users, BookOpen, Award, Upload, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { SkillsAnalysis } from './SkillsAnalysis';
 import { LearningRoadmap } from './LearningRoadmap';
 import { ProgressTracking } from './ProgressTracking';
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   const overallProgress = 68;
   const activeGoals = 3;
   const completedCourses = 12;
@@ -35,7 +37,7 @@ export const Dashboard = () => {
                 <Upload className="h-4 w-4" />
                 Upload Resume
               </Button>
-              <Button className="btn-gradient gap-2">
+              <Button className="btn-gradient gap-2" onClick={() => navigate('/generate')}>
                 <Zap className="h-4 w-4" />
                 Generate Roadmap
               </Button>
