@@ -15,6 +15,26 @@ export const Dashboard = () => {
   const activeGoals = 3;
   const completedCourses = 12;
   const skillsGap = 8;
+  //State for file upload
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+  // Add a ref for the file input
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  
+  // Handle button click to open file dialog
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  //  handle file selection
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Handle file upload logic here
+      setSelectedFile(file);
+      console.log('Selected file:', file.name);
+    }
+  };
+  const isImage = selectedFile && selectedFile.type.startsWith('image/');
 
   return (
     <div className="min-h-screen bg-background">
@@ -33,10 +53,41 @@ export const Dashboard = () => {
             </div>
             
             <div className="flex items-center gap-4">
-              <Button variant="outline" className="gap-2">
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+                accept=".pdf,.doc,.docx"
+              />
+              {selectedFile ? (
+                <div className="flex items-center gap-2">
+                  {isImage ? (
+                    <img
+                      src={URL.createObjectURL(selectedFile)}
+                      alt="Resume Thumbnail"
+                      className="h-10 w-10 rounded object-cover border"
+                    />
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Upload className="h-6 w-6 text-primary" />
+                      <span className="text-sm">{selectedFile.name}</span>
+                    </div>
+                  )}
+                  <Button variant="outline" size="sm" onClick={() => setSelectedFile(null)}>
+                    Remove
+                  </Button>
+                </div>
+              ) : (
+                <Button variant="outline" className="gap-2" onClick={handleUploadClick}>
+                  <Upload className="h-4 w-4" />
+                  Upload Resume
+                </Button>
+              )}
+              {/* <Button variant="outline" className="gap-2" onClick={handleUploadClick}>
                 <Upload className="h-4 w-4" />
                 Upload Resume
-              </Button>
+              </Button> */}
               <Button className="btn-gradient gap-2" onClick={() => navigate('/generate')}>
                 <Zap className="h-4 w-4" />
                 Generate Roadmap
