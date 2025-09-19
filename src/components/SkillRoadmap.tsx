@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useState, useEffect } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import ReactFlow, {
   Node,
   Edge,
@@ -244,9 +246,25 @@ export const SkillRoadmap: React.FC<SkillRoadmapProps> = ({
     [setEdges]
   );
 
-  const handleExport = () => {
-    // Placeholder for export functionality
-    console.log('Export roadmap as PNG/PDF');
+  const  handleExport = async() => {
+    const element = document.getElementById('roadmap-flow-container');
+  if (!element) return;
+
+  const canvas = await html2canvas(element, {
+    backgroundColor: null,
+    useCORS: true,
+    scale: 2,
+  });
+  const imgData = canvas.toDataURL('image/png');
+
+  const pdf = new jsPDF({
+    orientation: 'landscape',
+    unit: 'px',
+    format: [canvas.width, canvas.height],
+  });
+
+  pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+  pdf.save('roadmap.pdf');
   };
 
   if (!isVisible) return null;
@@ -254,7 +272,7 @@ export const SkillRoadmap: React.FC<SkillRoadmapProps> = ({
   return (
     <div className="flex-1 h-screen roadmap-enter">
       <div className="h-full flex flex-col">
-        <div className="flex items-center justify-between p-4 border-b border-border bg-card-glass">
+        <div className="flex items-center justify-between p-2.5 border-b border-border bg-card-glass">
           <h2 className="text-xl font-semibold">Learning Roadmap</h2>
           <Button
             onClick={handleExport}
@@ -267,7 +285,7 @@ export const SkillRoadmap: React.FC<SkillRoadmapProps> = ({
           </Button>
         </div>
         
-        <div className="flex-1">
+        <div className="flex-1" id="roadmap-flow-container">
           <ReactFlow
             nodes={nodes}
             edges={edges}
