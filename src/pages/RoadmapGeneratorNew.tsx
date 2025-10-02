@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { ReactFlow, useNodesState, useEdgesState, addEdge, Background, Controls, MiniMap, Node, Edge, Connection, Handle, Position } from '@xyflow/react';
+import { ReactFlow, useNodesState, useEdgesState, addEdge, Background, Controls, MiniMap, Node, Edge, Connection } from '@xyflow/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -72,96 +72,65 @@ const TopicNode = ({ data }: { data: NodeData }) => {
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
-  return (
-    <div className="relative">
-      {/* React Flow Handles */}
-      <Handle
-        type="target"
-        position={Position.Top}
-        id="top"
-        className="w-3 h-3 !bg-blue-500 !border-2 !border-white"
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="bottom"
-        className="w-3 h-3 !bg-blue-500 !border-2 !border-white"
-      />
-      
-      <Card className="w-80 shadow-lg border-l-4 border-l-primary hover:shadow-xl transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              {getTypeIcon(data.difficulty || '')}
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-sm mb-2 line-clamp-2">
-                {data.label || data.name}
-              </h3>
-              
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline" className={getDifficultyColor(data.difficulty || '')}>
-                  {data.difficulty || 'N/A'}
-                </Badge>
-                {data.estimated_time && (
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="h-3 w-3" />
-                    {data.estimated_time}
-                  </div>
-                )}
-              </div>
 
-              {(data.subSteps || data.sub_steps) && (
-                <div className="mt-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="h-6 px-2 text-xs"
-                  >
-                    {isExpanded ? 'Hide' : 'Show'} Steps ({(data.subSteps || data.sub_steps)?.length || 0})
-                  </Button>
-                  
-                  {isExpanded && (
-                    <div className="mt-2 space-y-1">
-                      {(data.subSteps || data.sub_steps)?.map((step: string | RoadmapStep, index: number) => (
-                        <div key={index} className="text-xs text-muted-foreground pl-2 border-l-2 border-gray-200">
-                          {typeof step === 'string' ? step : step.title || step.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+  return (
+    <Card className="w-80 shadow-lg border-l-4 border-l-primary hover:shadow-xl transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            {getTypeIcon(data.difficulty || '')}
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-sm mb-2 line-clamp-2">
+              {data.label || data.name}
+            </h3>
+            
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="outline" className={getDifficultyColor(data.difficulty || '')}>
+                {data.difficulty || 'N/A'}
+              </Badge>
+              {data.estimated_time && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  {data.estimated_time}
                 </div>
               )}
             </div>
+
+            {(data.subSteps || data.sub_steps) && (
+              <div className="mt-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="h-6 px-2 text-xs"
+                >
+                  {isExpanded ? 'Hide' : 'Show'} Steps ({(data.subSteps || data.sub_steps)?.length || 0})
+                </Button>
+                
+                {isExpanded && (
+                  <div className="mt-2 space-y-1">
+                    {(data.subSteps || data.sub_steps)?.map((step: string | RoadmapStep, index: number) => (
+                      <div key={index} className="text-xs text-muted-foreground pl-2 border-l-2 border-gray-200">
+                        {typeof step === 'string' ? step : step.title || step.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
 const PhaseTitleNode = ({ data }: { data: NodeData }) => {
   return (
-    <div className="relative">
-      {/* React Flow Handles */}
-      <Handle
-        type="target"
-        position={Position.Top}
-        id="top"
-        className="w-3 h-3 !bg-purple-600 !border-2 !border-white"
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="bottom"
-        className="w-3 h-3 !bg-purple-600 !border-2 !border-white"
-      />
-      
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg shadow-lg min-w-72">
-        <div className="text-center">
-          <h2 className="text-lg font-bold">{data.label}</h2>
-        </div>
+    <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg shadow-lg min-w-72">
+      <div className="text-center">
+        <h2 className="text-lg font-bold">{data.label}</h2>
       </div>
     </div>
   );
@@ -174,7 +143,7 @@ const nodeTypes = {
 };
 
 // Helper function to process API response and create proper nodes/edges layout
-const processRoadmapData = (apiData: { nodes?: RoadmapNode[] }): { nodes: RoadmapNode[], edges: Edge[] } => {
+const processRoadmapData = (apiData: any): { nodes: RoadmapNode[], edges: Edge[] } => {
   const nodes: RoadmapNode[] = [];
   const edges: Edge[] = [];
   
@@ -183,8 +152,8 @@ const processRoadmapData = (apiData: { nodes?: RoadmapNode[] }): { nodes: Roadma
   }
 
   let currentY = 0;
-  const verticalSpacing = 200;
-  const horizontalCenter = 400;
+  const verticalSpacing = 180;
+  const horizontalCenter = 300;
   
   // Group nodes by phase
   const phaseGroups: { [key: string]: RoadmapNode[] } = {};
@@ -207,7 +176,7 @@ const processRoadmapData = (apiData: { nodes?: RoadmapNode[] }): { nodes: Roadma
         ...phaseNode,
         position: { x: horizontalCenter, y: currentY }
       });
-      currentY += 120;
+      currentY += 100;
 
       // Find topics for this phase (basic grouping)
       const topicsPerPhase = Math.ceil(topicNodes.length / phaseNodes.length);
@@ -222,30 +191,23 @@ const processRoadmapData = (apiData: { nodes?: RoadmapNode[] }): { nodes: Roadma
           ...topicNode,
           position: { x: horizontalCenter, y: currentY }
         };
-        nodes.push(processedNode);        // Create edge from previous node with unique ID
-        const edgeId = `edge-${previousNodeId}-${processedNode.id}`;
+        nodes.push(processedNode);
+
+        // Create edge from previous node
         edges.push({
-          id: edgeId,
+          id: `edge-${previousNodeId}-${processedNode.id}`,
           source: previousNodeId,
           target: processedNode.id,
           type: 'smoothstep',
           animated: true,
-          style: { 
-            strokeWidth: 2, 
-            stroke: '#8b5cf6',
-            strokeDasharray: '5,5'
-          },
-          markerEnd: {
-            type: 'arrowclosed',
-            color: '#8b5cf6'
-          }
+          style: { strokeWidth: 2, stroke: '#8b5cf6' }
         });
 
         previousNodeId = processedNode.id;
         currentY += verticalSpacing;
       });
 
-      currentY += 80; // Extra space between phases
+      currentY += 50; // Extra space between phases
     });
   } else {
     // No phase nodes, just arrange topics vertically
@@ -256,29 +218,23 @@ const processRoadmapData = (apiData: { nodes?: RoadmapNode[] }): { nodes: Roadma
         ...node,
         position: { x: horizontalCenter, y: currentY }
       };
-      nodes.push(processedNode);      if (previousNodeId) {
-        const edgeId = `edge-${previousNodeId}-${processedNode.id}`;
+      nodes.push(processedNode);
+
+      if (previousNodeId) {
         edges.push({
-          id: edgeId,
+          id: `edge-${previousNodeId}-${processedNode.id}`,
           source: previousNodeId,
           target: processedNode.id,
           type: 'smoothstep',
           animated: true,
-          style: { 
-            strokeWidth: 2, 
-            stroke: '#8b5cf6',
-            strokeDasharray: '5,5'
-          },
-          markerEnd: {
-            type: 'arrowclosed',
-            color: '#8b5cf6'
-          }
+          style: { strokeWidth: 2, stroke: '#8b5cf6' }
         });
       }
 
       previousNodeId = processedNode.id;
       currentY += verticalSpacing;
-    });  }
+    });
+  }
 
   return { nodes, edges };
 };
@@ -304,9 +260,8 @@ const RoadmapGenerator = () => {
   useEffect(() => {
     scrollToBottom();
   }, [chatMessages]);
-  const onConnect = useCallback((params: Connection) => {
-    setEdges((eds) => addEdge(params, eds));
-  }, [setEdges]);
+
+  const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   // Generate initial roadmap
   const generateRoadmap = async () => {
@@ -340,18 +295,20 @@ const RoadmapGenerator = () => {
         if (data.error) {
           throw new Error(data.error);
         }
-      } catch (fetchError) {        // Fallback to mock data if server is not available
+      } catch (fetchError) {
+        // Fallback to mock data if server is not available
+        console.log('Server not available, using mock data');
         data = {
           roadmap: {
             nodes: [
               {
-                id: 'phase-1',
+                id: '1',
                 type: 'phaseTitle',
                 data: { label: 'Phase 1: Foundation Skills' },
-                position: { x: 400, y: 0 }
+                position: { x: 300, y: 0 }
               },
               {
-                id: 'topic-1',
+                id: '2',
                 type: 'topic',
                 data: { 
                   label: 'Learn JavaScript Fundamentals',
@@ -359,10 +316,10 @@ const RoadmapGenerator = () => {
                   estimated_time: '4 weeks',
                   subSteps: ['Variables and Data Types', 'Functions', 'DOM Manipulation', 'Event Handling']
                 },
-                position: { x: 400, y: 150 }
+                position: { x: 300, y: 150 }
               },
               {
-                id: 'topic-2',
+                id: '3',
                 type: 'topic',
                 data: { 
                   label: 'React Basics',
@@ -370,16 +327,16 @@ const RoadmapGenerator = () => {
                   estimated_time: '3 weeks',
                   subSteps: ['Components', 'Props and State', 'Event Handling', 'Lifecycle Methods']
                 },
-                position: { x: 400, y: 350 }
+                position: { x: 300, y: 330 }
               },
               {
-                id: 'phase-2',
+                id: '4',
                 type: 'phaseTitle',
                 data: { label: 'Phase 2: Advanced Topics' },
-                position: { x: 400, y: 550 }
+                position: { x: 300, y: 510 }
               },
               {
-                id: 'topic-3',
+                id: '5',
                 type: 'topic',
                 data: { 
                   label: 'Advanced React & State Management',
@@ -387,10 +344,10 @@ const RoadmapGenerator = () => {
                   estimated_time: '4 weeks',
                   subSteps: ['Hooks', 'Context API', 'Redux', 'Performance Optimization']
                 },
-                position: { x: 400, y: 700 }
+                position: { x: 300, y: 660 }
               }
             ],
-            edges: [] // Will be generated by processRoadmapData
+            edges: []
           },
           message: 'Mock roadmap generated (server not available) - showing structured learning path'
         };
@@ -419,8 +376,10 @@ const RoadmapGenerator = () => {
           timestamp: new Date()
         }
       ]);
-        setIsChatOpen(true);
+      
+      setIsChatOpen(true);
     } catch (error) {
+      console.error('Error generating roadmap:', error);
       const errorMessage: ChatMessage = {
         id: '1',
         type: 'assistant',
@@ -492,7 +451,10 @@ const RoadmapGenerator = () => {
         content: data.message || 'Roadmap updated successfully!',
         timestamp: new Date()
       };
-      setChatMessages(prev => [...prev, assistantMessage]);    } catch (error) {
+      setChatMessages(prev => [...prev, assistantMessage]);
+
+    } catch (error) {
+      console.error('Error refining roadmap:', error);
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
@@ -521,7 +483,8 @@ const RoadmapGenerator = () => {
       } else {
         generateRoadmap();
       }
-    }  };
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -600,7 +563,7 @@ const RoadmapGenerator = () => {
           <div className="container mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
+                <div className="gradient-primary p-2 rounded-lg">
                   <Brain className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -676,12 +639,7 @@ const RoadmapGenerator = () => {
 
         {/* React Flow Visualization */}
         {roadmapData && (
-          <div className="flex-1 relative">
-            {/* Debug Info */}
-            <div className="absolute top-4 right-4 z-10 bg-white p-2 rounded shadow text-xs">
-              Nodes: {nodes.length} | Edges: {edges.length}
-            </div>
-            
+          <div className="flex-1">
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -693,37 +651,20 @@ const RoadmapGenerator = () => {
               fitViewOptions={{
                 padding: 0.2,
                 includeHiddenNodes: false,
-                maxZoom: 1,
-                minZoom: 0.3
-              }}              defaultEdgeOptions={{
+                maxZoom: 1.2,
+                minZoom: 0.5
+              }}
+              defaultEdgeOptions={{
                 animated: true,
                 type: 'smoothstep',
-                style: { 
-                  strokeWidth: 2, 
-                  stroke: '#8b5cf6' 
-                },
-                markerEnd: {
-                  type: 'arrowclosed',
-                  color: '#8b5cf6'
-                }
+                style: { strokeWidth: 2, stroke: '#8b5cf6' },
               }}
               className="bg-background"
               proOptions={{ hideAttribution: true }}
             >
               <Background />
               <Controls />
-              <MiniMap 
-                nodeColor={(node) => {
-                  switch (node.type) {
-                    case 'phaseTitle': return '#8b5cf6';
-                    case 'topic': return '#3b82f6';
-                    default: return '#6b7280';
-                  }
-                }}
-                nodeStrokeColor={(node) => '#000'}
-                nodeStrokeWidth={1}
-                maskColor="rgb(240, 240, 240, 0.6)"
-              />
+              <MiniMap />
             </ReactFlow>
           </div>
         )}
